@@ -131,7 +131,7 @@ aridity_index_df <- aridity_index_df %>%
                            ordered = TRUE))
 
 # # SAVE aridity index DATASET SO DON'T HAVE TO DOWNLOAD EVERY TIME
-# write.csv(aridity_index_df, file = "../output/global_aridity_index.csv") # too big
+write.csv(aridity_index_df, file = "../output/global_aridity_index.csv") # too big
 
 
 #--- Set a colour palette ---#
@@ -171,3 +171,13 @@ pdf(file = "../output/ardity_map.pdf",
     height = 3.5)
 aridity_map
 dev.off()
+
+
+#--- Load DT taxa data ---#
+# Marks_et.al_Appendix_S1 2021
+marks <- read.csv("../data/Marks_et.al_Appendix_S1.csv", header = T)
+# fix colnames
+colnames(marks) <- as.character(unlist(marks[1,]))
+marks = marks[-1, ]
+
+
