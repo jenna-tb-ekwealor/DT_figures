@@ -34,6 +34,8 @@ setwd(wd_script_location)
 # vpd (Vapor Pressure Deficit, average for month), units = kpa
 # PDSI (Palmer Drought Severity Index, at end of month), units = unitless
 
+options(timeout=1000)
+
 # Precipitation
 download.file(url = 'http://thredds.northwestknowledge.net:8080/thredds/fileServer/TERRACLIMATE_ALL/data/TerraClimate_ppt_2019.nc',
               destfile = '../data/ppt.nc')
