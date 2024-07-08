@@ -21,7 +21,8 @@ allplants <- read.csv("../data/classification.csv", sep = "\t", na.strings=c("",
 allplants %>% dplyr::select(family, genus) %>% unique() -> allplants
 # omit row if NA in family
 allplants[!is.na(allplants$family),] -> allplants
-
+colnames(allplants) <- c("Family", "Genus")
+allplants$Kingdom <- rep("Plantae")
 
 #--- Load DT taxa data ---#
 # Marks_et.al_Appendix_S1 2021
@@ -37,32 +38,48 @@ marks_counts <- marks %>% dplyr::group_by(Family, Kingdom) %>% dplyr::summarize(
 # family_df <- dplyr::filter(family_df, !grepl("idae",family))
 
 # combine marks with all plants
-
-
-
+allplants_DT <- marks %>% dplyr::select(Family, Genus, Kingdom) %>% rbind(., allplants)
 
 
 resolved_names <- rotl::tnrs_match_names(unique(allplants_DT$Family))
+# Warning messages:
+# 1: Some names were duplicated: ‘ricciaceae’, ‘hookeriaceae’. 
+# 2: pseudoleskeaceae, antitrichiaceae, jocheniaceae, aongstroemiaceae, ruficaulaceae, dicranellopsidaceae, rhizofabroniaceae, obtusifoliaceae, pseudomoerckiaceae are not matched 
 
 in_tree <- rotl::is_in_tree(rotl::ott_id(resolved_names))
 family_tree <- tol_induced_subtree(ott_id(resolved_names)[in_tree])
 
 # how many families total?
 length(unique(allplants_DT$Family))
-# [1] 99
+# [1] 726
 
 # how many in tree?
 length(resolved_names$search_string[in_tree])
-# [1] 68
+# [1] 622
 
 # join original df to rotl df since tip names are ott_id
 full_plant_df <- dplyr::left_join(resolved_names, (allplants_DT %>% dplyr::select(Family, Kingdom) %>% unique()), c("unique_name" = "Family")) # %>% na.omit()
 full_plant_df$Family <- full_plant_df$unique_name
 # custom fill in blanks
+# THESE FAMILIES NEED TO BE CHECKED, I DON'T THINK THEY'RE ALL PLANTS. IF THEYRE NOT, THEY NEED TO BE REMOVED
 full_plant_df %>% dplyr::mutate(Kingdom = case_when(Family == "Cactaceae"~ "Plantae",
                                                     Family == "Hookeriaceae"~ "Plantae",
                                                     Family == "Tetraphidaceae"~ "Plantae",
                                                     Family == "Plagiochilaceae" ~ "Plantae", 
+                                                    Family == "Adoxaceae"~ "Plantae",
+                                                    Family == "Amphidiniaceae"~ "Plantae",
+                                                    Family == "Chordariaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
+                                                    Family == "Chrysoblastella"~ "Plantae",
+                                                    Family == "Dicranemaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
+                                                    Family == "Ephemeraceae"~ "Plantae",
+                                                    Family == "Gigaspermaceae" ~ "Plantae", 
+                                                    Family == "Heterocladiaceae"~ "Plantae",
+                                                    Family == "Hydnodontaceae"~ "Plantae",
+                                                    Family == "Hydropogonaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
+                                                    Family == "Hymenomonadaceae"~ "Plantae",
+                                                    Family == "Pilotrichaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
+                                                    Family == "Pseudoleskeella"~ "Plantae",
+                                                    Family == "Sarocladiaceae" ~ "Plantae", 
                                                     .default = Kingdom)) -> full_plant_df
 
 # fix tip labels for plotting data
@@ -72,13 +89,23 @@ family_tree$tip.label <- taxon_map[ otl_tips ]
 
 
 # plot tree
-ggtree(family_tree, layout = "fan", open.angle = 1, size = 0.15) +
+# after: manually move label for 0 to shortest bar on y axis
+# change values to linear numbers (1, 7, 55) instead of (0, 2, 4)
+ggtree(family_tree, layout = "fan", open.angle = 1, size = 0.15, ladderize = T) +
   ggtreeExtra::geom_fruit(data = marks_counts, geom = geom_bar,
-                          mapping=aes(y = Family, x = log10(count+1), fill = Kingdom), # add 1 to count before log so that 0 still shows as a bar
+                          mapping=aes(y = Family, x = log(count + 1), fill = Kingdom),
                           pwidth=0.38,
                           orientation="y",
                           stat="identity",
-  ) +
+                          axis.params=list(
+                            axis="x", # add axis text of the layer.
+                            text.size = 2,
+                            text.angle=0, # the text size of axis.
+                            hjust=0,# adjust the horizontal position of text of axis.
+                            nbreak = 2
+                          ),
+                          grid.params=list() # add the grid line of the external bar plot.
+  ) + 
 scale_fill_manual(name = "Kingdom", 
                     values = c(Animalia = "#FB4D3D", Fungi = "#345995", Plantae = "#03CEA4", Bacteria = "#E5D4ED", Chromista = "#EAC435")) +
   theme(legend.position = "none",
