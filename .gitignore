@@ -1,2 +1,5 @@
 
 .DS_Store
+data/pet.nc
+data/ppt.nc
+data/tmin.nc
