@@ -3,3 +3,4 @@
 data/pet.nc
 data/ppt.nc
 data/tmin.nc
+output/global_aridity_index.csv
