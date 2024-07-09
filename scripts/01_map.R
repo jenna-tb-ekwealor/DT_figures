@@ -215,10 +215,93 @@ saveRDS(occ_search, file="../data/occ_search.RData")
 # load instead of running 
 occ_search <- readRDS("../data/occ_search.RData")
 
-Poa <- occ_search[["Poa"]][["data"]] %>% dplyr::select(key, decimalLatitude, decimalLongitude, kingdom, phylum, order, family, genus, species, taxonKey, taxonRank, continent, stateProvince) 
+# below test on Poa, delete later
+# 
+# Poa <- occ_search[["Poa"]][["data"]] %>% dplyr::select(key, decimalLatitude, decimalLongitude, kingdom, phylum, order, family, genus, species, taxonKey, taxonRank, continent, stateProvince) 
+# 
+# # drop if NA in species
+# Poa <- Poa[!is.na(Poa$species), ]
+# 
+# 
+# 
+# 
+# 
+# 
+# ###############################
+# # rasterize occurence points
+# ###############################
+# 
+# # arrange df by species
+# Poa <- Poa %>% dplyr::arrange(species)
+# 
+# # subset only spatial and species data
+# xy <-  Poa %>% dplyr::select(decimalLongitude, decimalLatitude, species) 
+# colnames(xy) <- c("lon", "lat", "species")
+# 
+# # generate species list
+# species_list <- unique(xy$species)
+# 
+# v <- terra::vect(xy)
+# r <- terra::rast(nrows = 100, ncols = 100, crs = "EPSG:4326", ext = terra::ext(v))
+# 
+# species_raster <- terra::rasterize(v, r, fun = "count", by = "species")
+# names(species_raster) <- species_list
+# 
+# richness_raster <- terra::rasterize(v, species_raster, fun = function(x, ...) length(unique(na.omit(x))))
+# terra::plot(richness_raster)
+# # finally have a richness raster
+# 
+# names(richness_raster) <- "Species"
+# 
+# # #--- Convert raster to a matrix ---#
+# # 
+# # #--- Convert the matrix to a dataframe ---#
+# # richness_raster_df <- as.data.frame(richness_matrix)
+# 
+# # create blank world raster
+# world_raster_df <- aridity_index_df %>% dplyr::select(-category, -layer)
+# 
+# # plot 
+# ggplot() + 
+#   geom_raster(data = world_raster_df,
+#               aes(y = y,
+#                   x = x),
+#                   fill = "lightgray") +
+#   theme_minimal() +
+#   theme(axis.ticks = element_blank(),
+#         axis.text.x = element_blank(),
+#         axis.text.y = element_blank(),
+#         axis.title.x = element_blank(),
+#         axis.title.y = element_blank(),
+#         legend.position = c(0.13, 0.5)) +
+#   tidyterra::geom_spatraster(data = richness_raster)+
+#   scale_fill_grass_c(
+#     palette = "grass",
+#     guide = guide_legend(reverse = TRUE)) +
+#   labs(fill = "Species")
+# 
+# 
+# 
+# 
+# Poa_map 
+# 
+# 
+# pdf(file = "../output/Poa_map.pdf",
+#     width = 5.5,
+#     height = 3.5)
+# Poa_map
+# dev.off()
+
+
+occ_search_unlist <- lapply(occ_search, `[[`, "data")
+
+# pull data from all elements of occ list 
+occ_data_all <- purrr::list_rbind(occ_search_unlist)
+
+occ_data_all %>% dplyr::select(key, decimalLatitude, decimalLongitude, kingdom, phylum, order, family, genus, species, taxonKey, taxonRank, continent, stateProvince) -> occ_data_all
 
 # drop if NA in species
-Poa <- Poa[!is.na(Poa$species), ]
+occ_data_all <- occ_data_all[!is.na(occ_data_all$species), ]
 
 
 
@@ -230,24 +313,24 @@ Poa <- Poa[!is.na(Poa$species), ]
 ###############################
 
 # arrange df by species
-Poa <- Poa %>% dplyr::arrange(species)
+occ_data_all <- occ_data_all %>% dplyr::arrange(species)
 
 # subset only spatial and species data
-xy <-  Poa %>% dplyr::select(decimalLongitude, decimalLatitude, species) 
+xy <-  occ_data_all %>% dplyr::select(decimalLongitude, decimalLatitude, species) 
 colnames(xy) <- c("lon", "lat", "species")
 
 # generate species list
 species_list <- unique(xy$species)
 
 v <- terra::vect(xy)
-r <- terra::rast(nrows = 100, ncols = 100, crs = "EPSG:4326", ext = terra::ext(v))
+r <- terra::rast(nrows = 10, ncols = 10, crs = "EPSG:4326", ext = terra::ext(v))
+
 
 species_raster <- terra::rasterize(v, r, fun = "count", by = "species")
 names(species_raster) <- species_list
 
-richness_raster <- terra::rasterize(v, species_raster, fun = function(x, ...) length(unique(na.omit(x))))
+richness_raster <- terra::rasterize(v, r, "species", function(x, ...) length(unique(na.omit(x))))
 terra::plot(richness_raster)
-# finally have a richness raster
 
 names(richness_raster) <- "Species"
 
@@ -260,11 +343,11 @@ names(richness_raster) <- "Species"
 world_raster_df <- aridity_index_df %>% dplyr::select(-category, -layer)
 
 # plot 
-ggplot() + 
+richness_map <- ggplot() + 
   geom_raster(data = world_raster_df,
               aes(y = y,
                   x = x),
-                  fill = "lightgray") +
+              fill = "lightgray") +
   theme_minimal() +
   theme(axis.ticks = element_blank(),
         axis.text.x = element_blank(),
@@ -276,16 +359,12 @@ ggplot() +
   scale_fill_grass_c(
     palette = "grass",
     guide = guide_legend(reverse = TRUE)) +
-  labs(fill = "Species")
+  labs(fill = "Species") 
 
+richness_map
 
-
-
-Poa_map 
-
-
-pdf(file = "../output/Poa_map.pdf",
+pdf(file = "../output/richness_map.pdf",
     width = 5.5,
     height = 3.5)
-Poa_map
+richness_map
 dev.off()
