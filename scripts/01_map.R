@@ -206,11 +206,12 @@ get_occ <- function(genus){
   rgbif::occ_search(taxonKey = genus, limit = 5000)
 }
 
-occ_search <- lapply(usageKeys$usageKey, get_occ)
-names(occ_search) <- usageKeys$Genus
-
-# save occ search since it's big and took forever
-saveRDS(occ_search, file="../data/occ_search.RData")
+# UNCOMMENT BELOW TO RUN OCCURRENCE SEARCH, HUGE LIST (1.6 GB) SO LOAD INSTEAD IF ALREADY DONE 
+# occ_search <- lapply(usageKeys$usageKey, get_occ)
+# names(occ_search) <- usageKeys$Genus
+# 
+# # save occ search since it's big and took forever
+# saveRDS(occ_search, file="../data/occ_search.RData")
 
 # load instead of running 
 occ_search <- readRDS("../data/occ_search.RData")
@@ -369,3 +370,5 @@ pdf(file = "../output/richness_map.pdf",
     height = 3.5)
 richness_map
 dev.off()
+
+minmax(richness_raster, compute=FALSE)
