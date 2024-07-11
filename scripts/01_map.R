@@ -203,7 +203,7 @@ usageKeys <- unlist(usageKeys) %>% as.data.frame() %>% tibble::rownames_to_colum
 
 # create function for retrieving occurrences per genus
 get_occ <- function(genus){
-  rgbif::occ_search(taxonKey = genus, limit = 10000)
+  rgbif::occ_search(taxonKey = genus, limit = 5000)
 }
 
 occ_search <- lapply(usageKeys$usageKey, get_occ)
@@ -323,7 +323,7 @@ colnames(xy) <- c("lon", "lat", "species")
 species_list <- unique(xy$species)
 
 v <- terra::vect(xy)
-r <- terra::rast(nrows = 10, ncols = 10, crs = "EPSG:4326", ext = terra::ext(v))
+r <- terra::rast(nrows = 500, ncols = 500, crs = "EPSG:4326", ext = terra::ext(v))
 
 
 species_raster <- terra::rasterize(v, r, fun = "count", by = "species")
@@ -358,7 +358,8 @@ richness_map <- ggplot() +
   tidyterra::geom_spatraster(data = richness_raster)+
   scale_fill_grass_c(
     palette = "grass",
-    guide = guide_legend(reverse = TRUE)) +
+    direction=-1,
+    guide = guide_legend(reverse = F)) +
   labs(fill = "Species") 
 
 richness_map
