@@ -6,3 +6,4 @@ data/tmin.nc
 output/global_aridity_index.csv
 data/classification.csv
 scripts/.Rhistory
+data/occ_search.RData
