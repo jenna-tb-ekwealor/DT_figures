@@ -137,15 +137,15 @@ aridity_index_df$category <- factor(aridity_index_df$category, levels = c("Hyper
 
 
 #--- Set a colour palette ---#
-colours <- c("Hyper-arid" = '#ea6402', "Arid" = '#fd7e23', "Semi-arid" = '#fd9c55', "Dry sub-humid" = '#feb988', "Humid" = 'lightgrey')
+aridity_colours <- c("Hyper-arid" = '#ea6402', "Arid" = '#fd7e23', "Semi-arid" = '#fd9c55', "Dry sub-humid" = '#feb988', "Humid" = 'lightgrey')
 
 
 # remove big large datasets
 # rm(aridity_index)
-rm(aridity_index_matrix)
-rm(pet)
-rm(ppt)
-rm(tmin)
+# rm(aridity_index_matrix)
+# rm(pet)
+# rm(ppt)
+# rm(tmin)
 # rm(pet_mean)
 # rm(ppt_mean)
 
@@ -155,14 +155,16 @@ ggplot() +
               aes(y = y,
                   x = x,
                   fill = category)) +
-  scale_fill_manual(values = colours, name = "Aridity Index") +
+  scale_fill_manual(values = aridity_colours, name = "Aridity",
+                    labels = c("Hyper-arid" = '', "Arid" = '', "Semi-arid" = '', "Dry sub-humid" = '', "Humid" = '')
+  ) +
   theme_minimal() +
   theme(axis.ticks = element_blank(),
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_blank(),
         axis.title.y = element_blank(),
-        legend.position = c(0.13, 0.5))  -> aridity_map
+        legend.position = c(0.05, 0.5))  -> aridity_map
 aridity_map
 
 pdf(file = "../output/ardity_map.pdf",
@@ -187,19 +189,21 @@ genera <- unique(marks$Genus)
 retrieve_backbone <- function(genera){
   rgbif::name_backbone(name = genera)
 }
-# retrieve the backbone of each genus
-genera_backbones <- lapply(genera, retrieve_backbone)
-# add names
-names(genera_backbones) <- genera
 
-# get usagekeys
-getkeys <- function(genus){
-  genus[["usageKey"]]
-}
-usageKeys <- lapply(genera_backbones, getkeys)
-
-# organize output
-usageKeys <- unlist(usageKeys) %>% as.data.frame() %>% tibble::rownames_to_column(., "Genus") %>% dplyr::rename(., usageKey = .)
+# UNCOMMENT BELOW TO RUN GENERA SEARCH, LOAD occ_search BELOW INSTEAD IF ALREADY DONE 
+# # retrieve the backbone of each genus
+# genera_backbones <- lapply(genera, retrieve_backbone)
+# # add names
+# names(genera_backbones) <- genera
+# 
+# # get usagekeys
+# getkeys <- function(genus){
+#   genus[["usageKey"]]
+# }
+# usageKeys <- lapply(genera_backbones, getkeys)
+# 
+# # organize output
+# usageKeys <- unlist(usageKeys) %>% as.data.frame() %>% tibble::rownames_to_column(., "Genus") %>% dplyr::rename(., usageKey = .)
 
 # create function for retrieving occurrences per genus
 get_occ <- function(genus){
@@ -216,84 +220,6 @@ get_occ <- function(genus){
 # load instead of running 
 occ_search <- readRDS("../data/occ_search.RData")
 
-# below test on Poa, delete later
-# 
-# Poa <- occ_search[["Poa"]][["data"]] %>% dplyr::select(key, decimalLatitude, decimalLongitude, kingdom, phylum, order, family, genus, species, taxonKey, taxonRank, continent, stateProvince) 
-# 
-# # drop if NA in species
-# Poa <- Poa[!is.na(Poa$species), ]
-# 
-# 
-# 
-# 
-# 
-# 
-# ###############################
-# # rasterize occurence points
-# ###############################
-# 
-# # arrange df by species
-# Poa <- Poa %>% dplyr::arrange(species)
-# 
-# # subset only spatial and species data
-# xy <-  Poa %>% dplyr::select(decimalLongitude, decimalLatitude, species) 
-# colnames(xy) <- c("lon", "lat", "species")
-# 
-# # generate species list
-# species_list <- unique(xy$species)
-# 
-# v <- terra::vect(xy)
-# r <- terra::rast(nrows = 100, ncols = 100, crs = "EPSG:4326", ext = terra::ext(v))
-# 
-# species_raster <- terra::rasterize(v, r, fun = "count", by = "species")
-# names(species_raster) <- species_list
-# 
-# richness_raster <- terra::rasterize(v, species_raster, fun = function(x, ...) length(unique(na.omit(x))))
-# terra::plot(richness_raster)
-# # finally have a richness raster
-# 
-# names(richness_raster) <- "Species"
-# 
-# # #--- Convert raster to a matrix ---#
-# # 
-# # #--- Convert the matrix to a dataframe ---#
-# # richness_raster_df <- as.data.frame(richness_matrix)
-# 
-# # create blank world raster
-# world_raster_df <- aridity_index_df %>% dplyr::select(-category, -layer)
-# 
-# # plot 
-# ggplot() + 
-#   geom_raster(data = world_raster_df,
-#               aes(y = y,
-#                   x = x),
-#                   fill = "lightgray") +
-#   theme_minimal() +
-#   theme(axis.ticks = element_blank(),
-#         axis.text.x = element_blank(),
-#         axis.text.y = element_blank(),
-#         axis.title.x = element_blank(),
-#         axis.title.y = element_blank(),
-#         legend.position = c(0.13, 0.5)) +
-#   tidyterra::geom_spatraster(data = richness_raster)+
-#   scale_fill_grass_c(
-#     palette = "grass",
-#     guide = guide_legend(reverse = TRUE)) +
-#   labs(fill = "Species")
-# 
-# 
-# 
-# 
-# Poa_map 
-# 
-# 
-# pdf(file = "../output/Poa_map.pdf",
-#     width = 5.5,
-#     height = 3.5)
-# Poa_map
-# dev.off()
-
-
 occ_search_unlist <- lapply(occ_search, `[[`, "data")
 
 # pull data from all elements of occ list 
@@ -303,10 +229,6 @@ occ_data_all %>% dplyr::select(key, decimalLatitude, decimalLongitude, kingdom, 
 
 # drop if NA in species
 occ_data_all <- occ_data_all[!is.na(occ_data_all$species), ]
-
-
-
-
 
 
 ###############################
@@ -324,7 +246,7 @@ colnames(xy) <- c("lon", "lat", "species")
 species_list <- unique(xy$species)
 
 v <- terra::vect(xy)
-r <- terra::rast(nrows = 500, ncols = 500, crs = "EPSG:4326", ext = terra::ext(v))
+r <- terra::rast(nrows = 700, ncols = 700, crs = "EPSG:4326", ext = terra::ext(v))
 
 
 species_raster <- terra::rasterize(v, r, fun = "count", by = "species")
@@ -335,10 +257,17 @@ terra::plot(richness_raster)
 
 names(richness_raster) <- "Species"
 
-# #--- Convert raster to a matrix ---#
-# 
-# #--- Convert the matrix to a dataframe ---#
-# richness_raster_df <- as.data.frame(richness_matrix)
+#--- Convert the matrix to a dataframe ---#
+richness_raster_df <- terra::as.data.frame(richness_raster, xy = T)
+
+# there's one suspiciously high cell that's throwing off the color ramp so i'm going to delete it
+richness_raster_df <- richness_raster_df[-(which(richness_raster_df$Species == 1314)),]
+
+# save a copy of the richness raster df
+write.csv(richness_raster_df, file = "../output/global_plant_richness.csv", row.names = F) 
+
+# read in richness raster
+richness_raster_df <- read.csv("../output/global_plant_richness.csv", header = T)
 
 # create blank world raster
 world_raster_df <- aridity_index_df %>% dplyr::select(-category, -layer)
@@ -349,19 +278,22 @@ richness_map <- ggplot() +
               aes(y = y,
                   x = x),
               fill = "lightgray") +
+  geom_raster(data = richness_raster_df,
+              aes(y = y,
+                  x = x,
+              fill = Species)) +
   theme_minimal() +
   theme(axis.ticks = element_blank(),
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_blank(),
         axis.title.y = element_blank(),
-        legend.position = c(0.13, 0.5)) +
-  tidyterra::geom_spatraster(data = richness_raster)+
+        legend.position = c(0.08, 0.5)) +
   scale_fill_grass_c(
     palette = "grass",
     direction=-1,
-    guide = guide_legend(reverse = F)) +
-  labs(fill = "Species") 
+    guide = guide_legend(reverse = T)) +
+  labs(fill = "Species")
 
 richness_map
 
