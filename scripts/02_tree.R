@@ -7,6 +7,10 @@ library(rotl)
 # BiocManager::install("ggtreeExtra")
 library(ggtree)
 library(ggtreeExtra)
+library(taxize)
+library(stringr)
+library(dplyr)
+library(ggplot2)
 
 # the next three lines find the script location and set that as the working directory. copy these lines into all scripts for this project. 
 library(rstudioapi)
@@ -14,10 +18,12 @@ wd_script_location <- dirname(rstudioapi::getSourceEditorContext()$path)
 setwd(wd_script_location)
 
 
+
 #--- Download all plant names ---#
 # Latest Static Version:	World Flora Online Taxonomic Backbone	108MB	v.2023.12	Dec. 22, 2023	(DwCA) Taxonomic classification.	10.5281/zenodo.10425161
 # World Flora Online The Plant List https://www.worldfloraonline.org/downloadData
-allplants <- read.csv("../data/classification.csv", sep = "\t", na.strings=c("","NA"))
+# this file is too large for github so it will have to be downloaded directly by each user, and placed into the data directory
+allplants <- read.csv("../data/classification.csv", sep = "\t", na.strings=c("","NA")) 
 allplants %>% dplyr::select(family, genus) %>% unique() -> allplants
 # omit row if NA in family
 allplants[!is.na(allplants$family),] -> allplants
@@ -33,93 +39,266 @@ marks = marks[-1, ]
 marks$Kingdom <- rep("Plantae")
 
 # count genera per family
-marks_counts <- marks %>% dplyr::group_by(Family, Kingdom) %>% dplyr::summarize(count = n())  %>% arrange(desc(count)) %>% distinct() 
+marks_counts_genera <- marks %>% dplyr::group_by(Family, Kingdom) %>% select(Genus, Family) %>% distinct() %>% dplyr::summarize(count = n())  %>% arrange(desc(count)) %>% distinct() 
 # # remove "idae" non-family names
 # family_df <- dplyr::filter(family_df, !grepl("idae",family))
+
+# count families per order
+marks_counts_family <- marks %>% dplyr::group_by(Order, Kingdom) %>% select(Family, Order) %>% distinct()%>% dplyr::summarize(count = n())  %>% arrange(desc(count)) %>% distinct() %>% na.omit()
+
+# count order per class
+marks_counts_order <- marks %>% dplyr::group_by(Class, Kingdom) %>% select(Order, Class) %>% distinct()%>% dplyr::summarize(count = n())  %>% arrange(desc(count)) %>% distinct() %>% na.omit()
 
 # combine marks with all plants
 allplants_DT <- marks %>% dplyr::select(Family, Genus, Kingdom) %>% rbind(., allplants)
 
+# add order to allplants_DT
+allplants_DT_tax <- tax_name((allplants_DT$Family %>% unique()), get = c("order","class","phylum"), db = 'ncbi')
 
-resolved_names <- rotl::tnrs_match_names(unique(allplants_DT$Family))
-# Warning messages:
-# 1: Some names were duplicated: ‘ricciaceae’, ‘hookeriaceae’. 
-# 2: pseudoleskeaceae, antitrichiaceae, jocheniaceae, aongstroemiaceae, ruficaulaceae, dicranellopsidaceae, rhizofabroniaceae, obtusifoliaceae, pseudomoerckiaceae are not matched 
+# loop to prevent timeouts
+Families <- allplants_DT$Family %>% unique()
+
+# tax <- list()
+# for (i in 1: length(Families)) {
+#   tax[[i]] <- try(tax_name(sci = Families[i], get = c("order","class","phylum"), db = "ncbi"))
+#   if (class(tax[[i]])=="try-error") {
+#     Sys.sleep(10)
+#     tax[[i]] <- try(tax_name(sci = Families[i], get = c("order","class","phylum"), db = "ncbi"))}
+# }
+# 
+# # this took forever so make sure to save and reload
+# names(tax) <- Families
+# # convert to df
+# allplants_DT_tax <- do.call(rbind.data.frame, tax) 
+# # add order, class, phylum to allplants_DT
+# allplants_DT_full <- left_join(allplants_DT, allplants_DT_tax, by = c("Family"="query")) %>% dplyr::select(-db)
+# 
+# # rename columns
+# dplyr::rename(allplants_DT_full, Order = order) -> allplants_DT_full
+# dplyr::rename(allplants_DT_full, Class = class) -> allplants_DT_full
+# dplyr::rename(allplants_DT_full, Phylum = phylum) -> allplants_DT_full
+# 
+# 
+# # save this file 
+# write.csv(allplants_DT_full, "../data/allplants_DT_full.csv", row.names = F)
+
+allplants_DT_full <- read.csv("../data/allplants_DT_full.csv", header = T)
+
+
+# load list of DT nonplants_DT
+nonplants_DT <- read.csv("../data/nonplants.csv", header = T)
+# get genus with taxize
+nonplants_DT_tax <- tax_name(nonplants_DT$Genus, get = c("family","order","class","phylum"), db = 'ncbi')
+
+nonplants_DT$Family <- nonplants_DT_tax$family
+nonplants_DT$Order <- nonplants_DT_tax$order
+nonplants_DT$Class <- nonplants_DT_tax$class
+nonplants_DT$Phylum <- nonplants_DT_tax$phylum
+
+# count genera per family
+nonplants_DT_counts_genera <- nonplants_DT %>% dplyr::group_by(Family, Kingdom) %>% select(Genus, Family) %>% distinct() %>% dplyr::summarize(count = n())  %>% arrange(desc(count)) %>% distinct() 
+# # remove "idae" non-family names
+# family_df <- dplyr::filter(family_df, !grepl("idae",family))
+
+# count families per order
+nonplants_DT_counts_family <- nonplants_DT %>% dplyr::group_by(Order, Kingdom) %>% select(Family, Order) %>% distinct()%>% dplyr::summarize(count = n())  %>% arrange(desc(count)) %>% distinct() %>% na.omit()
+
+# count order per class
+nonplants_DT_counts_order <- nonplants_DT %>% dplyr::group_by(Class, Kingdom) %>% select(Order, Class) %>% distinct()%>% dplyr::summarize(count = n())  %>% arrange(desc(count)) %>% distinct() %>% na.omit()
+
+
+# join counts
+counts_family <- full_join(marks_counts_family, nonplants_DT_counts_family)
+
+
+
+# get list of all of these at target taxon level, call all_nonplants
+# let's try order level (order-level phylogeny, counting number of families)
+# need all the orders that exist for each class
+unique(nonplants_DT$Class)
+
+# https://itis.gov
+# retrieve all orders of each kingdom except plants
+Archaea <- taxize::downstream("Archaea", downto = "Order", db = "ncbi")
+Fungi <- taxize::downstream("Fungi", downto = "Order", db = "ncbi")
+
+Bacteria_phyla <- taxize::downstream("eubacteria", downto = "Phylum", db = "ncbi") # timing out to order level so try looping through phyla 
+
+Bac_tax <- list()
+Bac_phy <- Bacteria_phyla[["eubacteria"]][["childtaxa_name"]]
+for (i in 1: length(Bac_phy)) {
+  Bac_tax[i] <- try(taxize::downstream(Bac_phy[i], downto = "Order", db = "ncbi"))
+  if (class(Bac_tax[i])=="try-error") {
+    Sys.sleep(10)
+    Bac_tax[i] <- try(taxize::downstream(Bac_phy[i], downto = "Order", db = "ncbi"))}
+}
+names(Bac_tax) <- Bacteria_phyla[["eubacteria"]][["childtaxa_name"]]
+
+# convert to df
+Bacteria_df <- do.call(rbind.data.frame, Bac_tax) %>% dplyr::select(childtaxa_name)
+Bacteria_df$Phylum <- rownames(Bacteria_df)
+Bacteria_df$Phylum <- gsub('[.]', '', Bacteria_df$Phylum)
+Bacteria_df$Phylum <- gsub('[0-9]', '', Bacteria_df$Phylum)
+rownames(Bacteria_df) <- NULL
+colnames(Bacteria_df) <- c("Order", "Phylum")
+Bacteria_df$Kingdom <- rep("Bacteria")
+
+
+
+
+Animalia_phyla <- taxize::downstream("Metazoa", downto = "Phylum", db = "ncbi") # timing out to order level so try looping through phyla 
+
+An_tax <- list()
+An_phy <- Animalia_phyla[["Metazoa"]][["childtaxa_name"]]
+for (i in 1: length(An_phy)) {
+  An_tax[i] <- try(taxize::downstream(An_phy[i], downto = "Order", db = "ncbi"))
+  if (class(An_tax[i])=="try-error") {
+    Sys.sleep(10)
+    An_tax[i] <- try(taxize::downstream(An_phy[i], downto = "Order", db = "ncbi"))}
+}
+names(An_tax) <- Animalia_phyla[["Metazoa"]][["childtaxa_name"]]
+
+# convert to df
+Animalia_df <- do.call(rbind.data.frame, An_tax) %>% dplyr::select(childtaxa_name)
+Animalia_df$Phylum <- rownames(Animalia_df)
+Animalia_df$Phylum <- gsub('[.]', '', Animalia_df$Phylum)
+Animalia_df$Phylum <- gsub('[0-9]', '', Animalia_df$Phylum)
+rownames(Animalia_df) <- NULL
+colnames(Animalia_df) <- c("Order", "Phylum")
+Animalia_df$Kingdom <- rep("Animalia")
+  
+
+
+# clean up other outputs
+Archaea_df <- do.call(rbind.data.frame, Archaea)
+Archaea_df$Kingdom <- rep("Archaea")
+Archaea_df %>% dplyr::select(childtaxa_name, Kingdom) -> Archaea_df
+rownames(Archaea_df) <- NULL
+colnames(Archaea_df) <- c("Order", "Kingdom")
+
+Fungi_df <- do.call(rbind.data.frame, Fungi)
+Fungi_df$Kingdom <- rep("Fungi")
+Fungi_df %>% dplyr::select(childtaxa_name, Kingdom) -> Fungi_df
+rownames(Fungi_df) <- NULL
+colnames(Fungi_df) <- c("Order", "Kingdom")
+
+
+# join nonplants
+all_nonplants <- rbind((Bacteria_df %>% dplyr::select(-Phylum)), (Animalia_df %>% dplyr::select(-Phylum)), Fungi_df, Archaea_df)
+
+# join all_nonplants with nonplants_DT
+all_nonplants_DT <- full_join(all_nonplants, nonplants_DT)
+
+# join all_nonplants_DT with allplants_DT
+full_tree_df <- full_join(all_nonplants_DT, allplants_DT_full)
+
+write.csv(full_tree_df, "full_tree_df.csv", row.names = F)
+
+
+# reload all that from here
+full_tree_df <- read.csv("full_tree_df.csv", header = T)
+
+
+resolved_names <- rotl::tnrs_match_names(unique((full_tree_df$Order %>% na.omit())))
+# Warning message:
+#   Haliangiales, Nannocystales, Polyangiales, Deferrisomatales, Syntrophales, Desulfatiglandales, Terriglobales, Thermodesulfovibrionales, Reyranellales, Futianiales, Maricaulales, Woeseiales, Thiohalobacterales, Thiohalomonadales, Steroidobacterales, Kangiellales, Moraxellales, Vulcanimicrobiales, Miltoncostaeales, Stomatohabitantales, Salsipaludibacterales, Anaerosomatales, Tepidiformales, Aggregatilineales, Trueperales, Dethiobacterales, Culicoidibacterales, Lutisporales, Monoglobales, Gemmatales, Pirellulales, Tichowtungiales, Phormidesmidales, Geitlerinematales, Oculatellales, Aegeococcales, Thermostichales, Penicillaria (in: tube anenomes), Scleralcyonacea, Malacalcyonacea, Acropomatiformes, Tubulaniformes, Archinemertea, Kentrorhagata, Error : Bad Request (HTTP 400)
+# , Sareales, Lichinodiales, Tracyllales, Aulographales, Phaeothecales, Neophaeothecales, Microcaldales, Nanobdellales, Halorutilales, Oncothecales are not matched 
 
 in_tree <- rotl::is_in_tree(rotl::ott_id(resolved_names))
-family_tree <- tol_induced_subtree(ott_id(resolved_names)[in_tree])
+order_tree <- tol_induced_subtree(ott_id(resolved_names)[in_tree])
 
 # how many families total?
-length(unique(allplants_DT$Family))
-# [1] 726
+length(unique(full_tree_df$Order))
+# [1] 1082
 
 # how many in tree?
 length(resolved_names$search_string[in_tree])
-# [1] 622
+# [1] 754
 
 # join original df to rotl df since tip names are ott_id
-full_plant_df <- dplyr::left_join(resolved_names, (allplants_DT %>% dplyr::select(Family, Kingdom) %>% unique()), c("unique_name" = "Family")) # %>% na.omit()
-full_plant_df$Family <- full_plant_df$unique_name
+full_final_df <- dplyr::left_join(resolved_names, (full_tree_df %>% dplyr::select(Order, Class, Phylum, Kingdom) %>% unique()), c("unique_name" = "Order")) # %>% na.omit()
+full_final_df$Order <- full_final_df$unique_name
+
 # custom fill in blanks
-# THESE FAMILIES NEED TO BE CHECKED, I DON'T THINK THEY'RE ALL PLANTS. IF THEYRE NOT, THEY NEED TO BE REMOVED
-full_plant_df %>% dplyr::mutate(Kingdom = case_when(Family == "Cactaceae"~ "Plantae",
-                                                    Family == "Hookeriaceae"~ "Plantae",
-                                                    Family == "Tetraphidaceae"~ "Plantae",
-                                                    Family == "Plagiochilaceae" ~ "Plantae", 
-                                                    Family == "Adoxaceae"~ "Plantae",
-                                                    Family == "Amphidiniaceae"~ "Plantae",
-                                                    Family == "Chordariaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
-                                                    Family == "Chrysoblastella"~ "Plantae",
-                                                    Family == "Dicranemaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
-                                                    Family == "Ephemeraceae"~ "Plantae",
-                                                    Family == "Gigaspermaceae" ~ "Plantae", 
-                                                    Family == "Heterocladiaceae"~ "Plantae",
-                                                    Family == "Hydnodontaceae"~ "Plantae",
-                                                    Family == "Hydropogonaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
-                                                    Family == "Hymenomonadaceae"~ "Plantae",
-                                                    Family == "Pilotrichaceae" ~ "Plantae",                                                     Family == "Hookeriaceae"~ "Plantae",
-                                                    Family == "Pseudoleskeella"~ "Plantae",
-                                                    Family == "Sarocladiaceae" ~ "Plantae", 
-                                                    .default = Kingdom)) -> full_plant_df
+full_final_df %>% dplyr::mutate(Order = case_when(search_string == "phormidesmidales"~ "Phormidesmidales",
+                                                    search_string == "geitlerinematales"~ "Geitlerinematales",
+                                                    search_string == "oculatellales"~ "Oculatellales",
+                                                    search_string == "aegeococcales" ~ "Aegeococcales", 
+                                                    search_string == "thermostichales"~ "Thermostichales",
+                                                    search_string == "trueperales"~ "Trueperales",
+                                                    search_string == "lulworthiomycetidae" ~ "Lulworthiomycetidae",                                                     search_string == "Hookeriaceae"~ "Plantae",
+                                                    search_string == "oncothecales"~ "Oncothecales",
+                                                        .default = Order)) -> full_final_df
+
+
+full_final_df %>% dplyr::mutate(Kingdom = case_when(Order == "Gomontiellaceae"~ "Bacteria",
+                                                  Order == "Coleofasciculaceae"~ "Bacteria",
+                                                  Order == "Leptolyngbyaceae"~ "Bacteria",
+                                                  Order == "Prochlorotrichaceae (inconsistent in FamilyI (in SubsectionIII))" ~ "Bacteria", 
+                                                  Order == "Acaryochloridaceae"~ "Bacteria",
+                                                  Order == "Desertifilaceae"~ "Bacteria",
+                                                  Order == "Nodosilinea" ~ "Bacteria",                                                     Order == "Hookeriaceae"~ "Plantae",
+                                                  Order == "Gloeoemargaritales"~ "Bacteria",
+                                                  Order == "Parachela (genus in Deuterostomia)"~ "Bacteria",
+                                                  Order == "Bdelloidea (class in Lophotrochozoa)"~ "Bacteria",
+                                                  Order == "Nodosilinea" ~ "Bacteria",                                                     Order == "Hookeriaceae"~ "Plantae",
+                                                  Order == "Cardiopteridaceae"~ "Bacteria",
+                                                  
+                                                  .default = Kingdom)) -> full_final_df
 
 # fix tip labels for plotting data
-otl_tips <- strip_ott_ids(family_tree$tip.label, remove_underscores = TRUE)
-taxon_map <- structure(full_plant_df$unique_name, names = full_plant_df$unique_name) # can use this map to change the names further if need to
-family_tree$tip.label <- taxon_map[ otl_tips ]
+otl_tips <- strip_ott_ids(order_tree$tip.label, remove_underscores = TRUE)
+taxon_map <- structure(full_final_df$unique_name, names = full_final_df$unique_name) # can use this map to change the names further if need to
+order_tree$tip.label <- taxon_map[ otl_tips ]
 
 
 # plot tree
+# set kingdom colors
+animalia.color <- "#EE89AD"
+fungi.color <- "#6D4C3A"
+plantae.color <- "#44BC9D"
+archaea.color <- "#E8E613"
+bacteria.color <- "#F6881F"
+
+
 # after: manually move label for 0 to shortest bar on y axis
 # change values to linear numbers (1, 7, 55) instead of (0, 2, 4)
-ggtree(family_tree, layout = "fan", open.angle = 1, size = 0.15, ladderize = T) +
-  ggtreeExtra::geom_fruit(data = marks_counts, geom = geom_bar,
-                          mapping=aes(y = Family, x = log(count + 1), fill = Kingdom),
+order_tree_plot <- ggtree(order_tree, layout = "fan", open.angle = 1, size = 0.15, ladderize = T) +
+  ggtreeExtra::geom_fruit(data = counts_family, geom = geom_bar,
+                          mapping=aes(y = Order, x = count, fill = Kingdom),
                           pwidth=0.38,
                           orientation="y",
                           stat="identity",
                           axis.params=list(
                             axis="x", # add axis text of the layer.
-                            text.size = 2,
+                            text.size = 1.5,
                             text.angle=0, # the text size of axis.
                             hjust=0,# adjust the horizontal position of text of axis.
-                            nbreak = 2
+                            nbreak = 5
                           ),
-                          grid.params=list() # add the grid line of the external bar plot.
+                          grid.params=list()) +
+  scale_x_continuous(expand=c(0,0)
   ) + 
 scale_fill_manual(name = "Kingdom", 
-                    values = c(Animalia = "#FB4D3D", Fungi = "#345995", Plantae = "#03CEA4", Bacteria = "#E5D4ED", Chromista = "#EAC435")) +
+                    values = c(Animalia = animalia.color, Fungi = fungi.color, Plantae = plantae.color, Archaea = archaea.color, Bacteria = bacteria.color)) +
   theme(legend.position = "none",
-        plot.margin = margin(0, 0, 0, 0, "cm")) -> family_tree_plot
+        plot.margin = margin(0, 0, 0, 0, "cm")) +
+  geom_cladelabel(node = 718, color = plantae.color, label = "", offset=-0.5, align=TRUE) +
+  geom_cladelabel(node = 1120, color = fungi.color, label = "", offset=-0.5, align=TRUE) +
+  geom_cladelabel(node = 830, color = animalia.color, label = "", offset=-0.5, align=TRUE) +
+  geom_cladelabel(node = 1171, color = bacteria.color, label = "", offset=-0.5, align=TRUE) +
+  geom_cladelabel(node = 1267, color = archaea.color, label = "", offset=-0.5, align=TRUE) 
 
-family_tree_plot 
-
+order_tree_plot 
 
 pdf(file = "../output/tree.pdf", height = 4, width = 4.3)
-family_tree_plot
+order_tree_plot
 dev.off()
 
-
-
-
+# pdf(file = "../output/tree_nodenumbers.pdf", height = 4, width = 4.3)
+# order_tree_plot +
+#   geom_tiplab(size = 0.5) +
+#   geom_text(aes(label=node), size = 1, color = "hotpink")
+# dev.off()
 
 

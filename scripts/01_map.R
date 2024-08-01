@@ -181,41 +181,58 @@ marks <- read.csv("../data/Marks_et.al_Appendix_S1.csv", header = T)
 colnames(marks) <- as.character(unlist(marks[1,]))
 marks = marks[-1, ]
 
+nonplants <- read.csv("../data/nonplants.csv", header = T)
+
+# add nonplants and marks df
+DT_taxa <- full_join(marks, nonplants)
+
 # retrieve DT species from rgbif
-genera <- unique(marks$Genus)
+DT_taxa$Genus_species <- paste0(DT_taxa$Genus, " ", DT_taxa$Species)
+Genus <- unique(DT_taxa$Genus)
 
 # code below to search rbif but takes a while, so load rdata instead
 # create a retrieve backbone function to apply to each genus
-retrieve_backbone <- function(genera){
-  rgbif::name_backbone(name = genera)
+retrieve_backbone <- function(Genus){
+  rgbif::name_backbone(name = Genus)
 }
 
-# UNCOMMENT BELOW TO RUN GENERA SEARCH, LOAD occ_search BELOW INSTEAD IF ALREADY DONE 
-# # retrieve the backbone of each genus
-# genera_backbones <- lapply(genera, retrieve_backbone)
-# # add names
-# names(genera_backbones) <- genera
-# 
-# # get usagekeys
-# getkeys <- function(genus){
-#   genus[["usageKey"]]
-# }
-# usageKeys <- lapply(genera_backbones, getkeys)
-# 
-# # organize output
-# usageKeys <- unlist(usageKeys) %>% as.data.frame() %>% tibble::rownames_to_column(., "Genus") %>% dplyr::rename(., usageKey = .)
+# UNCOMMENT BELOW TO RUN BACKBONE SEARCH, LOAD occ_search BELOW INSTEAD IF ALREADY DONE
+# retrieve the backbone of each genus
+backbones <- lapply(Genus, retrieve_backbone)
 
-# create function for retrieving occurrences per genus
-get_occ <- function(genus){
-  rgbif::occ_search(taxonKey = genus, limit = 5000)
+# add names
+names(backbones) <- Genus
+
+# get usagekeys
+getkeys <- function(Genus){
+  Genus[["usageKey"]]
+}
+usageKeys <- lapply(backbones, getkeys)
+
+# organize output
+usageKeys <- unlist(usageKeys) %>% as.data.frame() %>% tibble::rownames_to_column(., "Genus") %>% dplyr::rename(., usageKey = .)
+
+# some manual cleaning, remove these Genus
+usageKeys %>% dplyr::filter(Genus != "Lindernia (previously Ilysanthes)") %>% 
+  dplyr::filter(Genus != "Cyperus (previously Kyllinga)") -> usageKeys
+
+
+# remove rows with duplicate usagekey
+usageKeys = usageKeys[!duplicated(usageKeys$usageKey),]
+
+
+# create function for retrieving occurrences per Genus
+get_occ <- function(Genus){
+  rgbif::occ_search(taxonKey = Genus, limit = 1000, curlopts = list(verbose = TRUE))
 }
 
-# UNCOMMENT BELOW TO RUN OCCURRENCE SEARCH, HUGE LIST (1.6 GB) SO LOAD INSTEAD IF ALREADY DONE 
-# occ_search <- lapply(usageKeys$usageKey, get_occ)
-# names(occ_search) <- usageKeys$Genus
-# 
-# # save occ search since it's big and took forever
-# saveRDS(occ_search, file="../data/occ_search.RData")
+occ_search <- lapply(usageKeys$usageKey, get_occ)
+
+# add names
+names(occ_search) <- usageKeys$Genus
+
+# save occ search since it's big and took forever
+saveRDS(occ_search, file="../data/occ_search.RData")
 
 # load instead of running 
 occ_search <- readRDS("../data/occ_search.RData")
@@ -227,41 +244,34 @@ occ_data_all <- purrr::list_rbind(occ_search_unlist)
 
 occ_data_all %>% dplyr::select(key, decimalLatitude, decimalLongitude, kingdom, phylum, order, family, genus, species, taxonKey, taxonRank, continent, stateProvince) -> occ_data_all
 
-# drop if NA in species
-occ_data_all <- occ_data_all[!is.na(occ_data_all$species), ]
-
-
 ###############################
 # rasterize occurence points
 ###############################
 
-# arrange df by species
-occ_data_all <- occ_data_all %>% dplyr::arrange(species)
+# arrange df by genus
+occ_data_all <- occ_data_all %>% dplyr::arrange(genus)
 
-# subset only spatial and species data
-xy <-  occ_data_all %>% dplyr::select(decimalLongitude, decimalLatitude, species) 
-colnames(xy) <- c("lon", "lat", "species")
+# subset only spatial and genera data
+xy <-  occ_data_all %>% dplyr::select(decimalLongitude, decimalLatitude, genus) 
+colnames(xy) <- c("lon", "lat", "genus")
 
-# generate species list
-species_list <- unique(xy$species)
+# generate genera list
+genera_list <- unique(xy$genus)
 
 v <- terra::vect(xy)
-r <- terra::rast(nrows = 700, ncols = 700, crs = "EPSG:4326", ext = terra::ext(v))
+r <- terra::rast(nrows = 200, ncols = 200, crs = "EPSG:4326", ext = terra::ext(v))
 
 
-species_raster <- terra::rasterize(v, r, fun = "count", by = "species")
-names(species_raster) <- species_list
+genera_raster <- terra::rasterize(v, r, fun = "count", by = "genus")
+names(genera_raster) <- genera_list
 
-richness_raster <- terra::rasterize(v, r, "species", function(x, ...) length(unique(na.omit(x))))
+richness_raster <- terra::rasterize(v, r, "genus", function(x, ...) length(unique(na.omit(x))))
 terra::plot(richness_raster)
 
-names(richness_raster) <- "Species"
+names(richness_raster) <- "Genera"
 
 #--- Convert the matrix to a dataframe ---#
 richness_raster_df <- terra::as.data.frame(richness_raster, xy = T)
-
-# there's one suspiciously high cell that's throwing off the color ramp so i'm going to delete it
-richness_raster_df <- richness_raster_df[-(which(richness_raster_df$Species == 1314)),]
 
 # save a copy of the richness raster df
 write.csv(richness_raster_df, file = "../output/global_plant_richness.csv", row.names = F) 
@@ -281,7 +291,7 @@ richness_map <- ggplot() +
   geom_raster(data = richness_raster_df,
               aes(y = y,
                   x = x,
-              fill = Species)) +
+              fill = Genera)) +
   theme_minimal() +
   theme(axis.ticks = element_blank(),
         axis.text.x = element_blank(),
@@ -293,7 +303,7 @@ richness_map <- ggplot() +
     palette = "grass",
     direction=-1,
     guide = guide_legend(reverse = T)) +
-  labs(fill = "Species")
+  labs(fill = "Genera")
 
 richness_map
 
