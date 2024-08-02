@@ -52,12 +52,9 @@ marks_counts_order <- marks %>% dplyr::group_by(Class, Kingdom) %>% select(Order
 # combine marks with all plants
 allplants_DT <- marks %>% dplyr::select(Family, Genus, Kingdom) %>% rbind(., allplants)
 
-# add order to allplants_DT
-allplants_DT_tax <- tax_name((allplants_DT$Family %>% unique()), get = c("order","class","phylum"), db = 'ncbi')
-
-# loop to prevent timeouts
-Families <- allplants_DT$Family %>% unique()
-
+# # loop to prevent timeouts
+# Families <- allplants_DT$Family %>% unique()
+# 
 # tax <- list()
 # for (i in 1: length(Families)) {
 #   tax[[i]] <- try(tax_name(sci = Families[i], get = c("order","class","phylum"), db = "ncbi"))
@@ -65,26 +62,26 @@ Families <- allplants_DT$Family %>% unique()
 #     Sys.sleep(10)
 #     tax[[i]] <- try(tax_name(sci = Families[i], get = c("order","class","phylum"), db = "ncbi"))}
 # }
-# 
-# # this took forever so make sure to save and reload
-# names(tax) <- Families
-# # convert to df
-# allplants_DT_tax <- do.call(rbind.data.frame, tax) 
-# # add order, class, phylum to allplants_DT
-# allplants_DT_full <- left_join(allplants_DT, allplants_DT_tax, by = c("Family"="query")) %>% dplyr::select(-db)
-# 
-# # rename columns
-# dplyr::rename(allplants_DT_full, Order = order) -> allplants_DT_full
-# dplyr::rename(allplants_DT_full, Class = class) -> allplants_DT_full
-# dplyr::rename(allplants_DT_full, Phylum = phylum) -> allplants_DT_full
-# 
-# 
-# # save this file 
+
+# this took forever so make sure to save and reload
+names(tax) <- Families
+# convert to df
+allplants_DT_tax <- do.call(rbind.data.frame, tax)
+# add order, class, phylum to allplants_DT
+allplants_DT_full <- left_join(allplants_DT, allplants_DT_tax, by = c("Family"="query")) %>% dplyr::select(-db)
+
+# rename columns
+dplyr::rename(allplants_DT_full, Order = order) -> allplants_DT_full
+dplyr::rename(allplants_DT_full, Class = class) -> allplants_DT_full
+dplyr::rename(allplants_DT_full, Phylum = phylum) -> allplants_DT_full
+
+#
+# # save this file
 # write.csv(allplants_DT_full, "../data/allplants_DT_full.csv", row.names = F)
 
 allplants_DT_full <- read.csv("../data/allplants_DT_full.csv", header = T)
 
-
+#### non-plants ####
 # load list of DT nonplants_DT
 nonplants_DT <- read.csv("../data/nonplants.csv", header = T)
 # get genus with taxize
