@@ -1,22 +1,107 @@
-Genus,Species,Kingdom 
-Chroococcidiopsis,,Bacteria
-Deinococcus,radiodurans,Bacteria
-Nostoc,commune,Bacteria
-Thermus,,Bacteria
-Saccharomyces,cerevisiae,Fungi
-Neurospora,crassa,Fungi
-Polypedilum,vanderplanki,Animalia
-Artemia,franciscana,Animalia
-Streptocephalus,macrourus,Animalia
-Adorybiotus,coronifer,Animalia
-Macrotrachela,quadricornifera,Animalia
-Macrotrachela,anoyei,Animalia
-Adineta,ricciae,Animalia
-Scottnema,lindsayae,Animalia
-Eudorylaimus,antarcticus,Animalia
-Plectus,,Animalia
-Geomonhystera,antarcticola,Animalia
-Panagrolaimus,davidi,Animalia
-Teratocephalus,tilbrooki,Animalia
-Ditylenchus,parcevivens,Animalia
-Belgica,antarctica,Animalia
+Kingdom,Order,Genus,Species,Life stage,Primary Reference,Primary Reference Link,Secondary Reference,Secondary Reference Link
+Bacteria,,Chroococcidiopsis,,,"Billi et al., 2000",https://doi.org/10.1016/S0923-2508(01)01279-7,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Bacteria,,Deinococcus,radiodurans,,"Billi et al., 2000",https://doi.org/10.1016/S0923-2508(01)01279-7,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Bacteria,,Nostoc,commune,,"Billi et al., 2000",https://doi.org/10.1016/S0923-2508(01)01279-7,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Bacteria,,Thermus,,,,,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Fungi,,Saccharomyces,cerevisiae,,"Garay-Arroyo et al., 2000",https://doi.org/10.1074/jbc.275.8.5668,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Fungi,,Neurospora,crassa,,"Garay-Arroyo et al., 2000",https://doi.org/10.1074/jbc.275.8.5668,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Polypedilum,vanderplanki,,"Watanabe et al., 2004",https://doi.org/10.14411/eje.2004.063,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Artemia,franciscana,,Clegg 2005,https://doi.org/10.1093/icb/45.5.715,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Streptocephalus,macrourus,,Mitchell 1990,https://doi.org/10.1007/BF00012108,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Adorybiotus,coronifer,,Wright 2000,https://doi.org/10.1078/0044-5231-00068,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Macrotrachela,quadricornifera,,"Ricci and Caprioli, 2005",https://doi.org/10.1093/icb/45.5.759,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Macrotrachela,anoyei,,"Ricci and Caprioli, 2005",https://doi.org/10.1093/icb/45.5.759,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Adineta,ricciae,,"Ricci and Caprioli, 2005",https://doi.org/10.1093/icb/45.5.759,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Scottnema,lindsayae,,Treonis and Wall 2005,https://doi.org/10.1093/icb/45.5.741,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Eudorylaimus,antarcticus,,Treonis and Wall 2005,https://doi.org/10.1093/icb/45.5.741,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Plectus,,,Treonis and Wall 2005,https://doi.org/10.1093/icb/45.5.741,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Geomonhystera,antarcticola,,Treonis and Wall 2005,https://doi.org/10.1093/icb/45.5.741,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Panagrolaimus,davidi,,Wharton 2003,https://doi.org/10.1007/s00360-003-0378-0,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Teratocephalus,tilbrooki,,Wharton 2003,https://doi.org/10.1007/s00360-003-0378-0,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Ditylenchus,parcevivens,,Wharton 2003,https://doi.org/10.1007/s00360-003-0378-0,Alpert 2006,https://journals.biologists.com/jeb/article/209/9/1575/16947/Constraints-of-tolerance-why-are-desiccation
+Animalia,,Belgica,antarctica,,,,,
+Animalia,,Hypsibius,exemplaris,,,,,
+Animalia,,Paramacrobiotus,rictersi,,,,,
+Animalia,,Ramazzottius,varieornatus,,,,,
+Animalia,,Viridiscus,viridianus,,,,,
+Animalia,,Acutuncus,antarcticus,,,,,
+Animalia,,Caenorhabditis,elegans,,,,,
+Animalia,,Artemia,salina,,,,,
+Animalia,Collembola,Folsomia,candida,"Egg, larva, adult","Sjursen et al., 2001; Holmstrup et al., 2002",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Cryptopygus,antarcticus,"Larva, adult","Alvarez et al., 1999; Hayward et al., 2004b; Elhity et al., 2008",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Friesea,grisea,"Larva, adult","Alvarez et al., 1999; Hayward et al., 2004b; Elhity et al., 2008",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Ephemeroptera,Protaophora,tricampta,Adult,"Holmstrup and Bayley, 2013",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Cloeodes,hydation,Larva,"Nolte et al., 1996",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Odonata,Libellula,depressa,Larva,"Rebora et al., 2007",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Orthoptera,Acheta,domesticus,Adult,"McCluney and Date, 2008",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Dianemobius,nigrofasciatus,Egg,"Goto et al., 2008",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Oedaleus,senegalensis,"Egg, adult","Colvin, 1996; Idrissa et al., 2008",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Dictyoptera,Periplaneta,americana,"Nymph, adult","Treherne and Willmer, 1975; Dambach and Goehlen, 1999",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Dictyoptera,Blattella,germanica,"Nymph, adult","Treherne and Willmer, 1975; Dambach and Goehlen, 1999",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Phasmida,,Carausius morosus,"Egg, larva","Tichy, 1979",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Plecoptera,,Protonemura intricate,"Egg, larva","Harper and Hynes, 1970; Marten and Zwick, 1989; Lancaster et al., 2010",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Isoptera,Macrotermes,carbonarius,Adult,"Hu et al., 2012",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Isoptera,Macrotermes,gilvus,Adult,"Hu et al., 2012",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Isoptera,Coptotermes,formosanus,Adult,"Hu et al., 2012",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Isoptera,Neotermes,jouteli,Adult,"Hu et al., 2012",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Isoptera,Cryptotermes,cavifrons,Adult,"Hu et al., 2012",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Isoptera,Cryptotermes,brevis,Adult,"Hu et al., 2012",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,,,,"Zukowski and Su, 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Dermaptera,Labidura,riparia,"Nymph, larva, adult","Kharboutli and Mack, 1993",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Hemiptera,Cryptopygommya,facialis,Nymph,"Moriyama and Numata, 2010, 2011",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Hemiptera,Graptopsaltria,nigrofuscata,Nymph,"Moriyama and Numata, 2010, 2011",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Cimex,lectularius,Adult,"Benoit et al., 2007a",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Leptocoris,varianus,"Larva, pupa","Wickson et al., 2012",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Lepidoptera,Chlosyne,lacinia,"Egg, Larva, Adult","Clark and Faeth, 1998; Willmer, 1980; Mazer and App, 2001; Rowley and Hanson, 2007; Davies et al., 2013",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Lepidoptera,Pleris,brassicae,"Egg, Larva, Adult","Clark and Faeth, 1998; Willmer, 1980; Mazer and App, 2001; Rowley and Hanson, 2007; Davies et al., 2013",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Lepidoptera,Aglais,io,"Egg, Larva, Adult","Clark and Faeth, 1998; Willmer, 1980; Mazer and App, 2001; Rowley and Hanson, 2007; Davies et al., 2013",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Lepidoptera,Heliconius,charitonia,"Egg, Larva, Adult","Clark and Faeth, 1998; Willmer, 1980; Mazer and App, 2001; Rowley and Hanson, 2007; Davies et al., 2013",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Lepidoptera,Manduca,sexta,"Egg, Larva, Adult","Clark and Faeth, 1998; Willmer, 1980; Mazer and App, 2001; Rowley and Hanson, 2007; Davies et al., 2013",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Hymenoptera,Ceratosolen,galili,Adult,"Warren et al., 2010; Atmowidjojo et al., 1997",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Hymenoptera,Ceratosolen,arabicus,Adult,"Warren et al., 2010; Atmowidjojo et al., 1997",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Hymenoptera,Apis,mellifera,Adult,"Warren et al., 2010; Atmowidjojo et al., 1997",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Diptera,Aedes,albopictus,"Egg, Larva, Adult","Sota and Mogi, 1992; Alto and Juliano, 2001; Hidalgo et al., 2014; Wakada et al., 2016; Diniz et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Diptera,Culex,pipiens,"Egg, Larva, Adult","Sota and Mogi, 1992; Alto and Juliano, 2001; Hidalgo et al., 2014; Wakada et al., 2016; Diniz et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Diptera,Anopheles,gambiae,"Egg, Larva, Adult","Sota and Mogi, 1992; Alto and Juliano, 2001; Hidalgo et al., 2014; Wakada et al., 2016; Diniz et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Polypedilum,vanderplanki,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Polypedilum,pembai,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Belgica,antarctica,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Chironomus,ramosus,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Chironomus,kiiensis,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Chironomus,crassiforceps,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,C.,nipponodaiaris,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,D,biwaipremus,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,C.,flavioplums,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Chironomus,salinarius,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,C.,circumcinctus,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Chironomus,yoshimatsui,Larva,"Suemoto et al., 2004; Benoit and Denlinger, 2007; Nakahara et al., 2008; Thorat and Nath, 2016; Thorat et al., 2017",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,,Ceratitis capitata,"Larva, adult","Xie and Zhang, 2007; Weldon et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,,C. cosyra,"Larva, adult","Xie and Zhang, 2007; Weldon et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,,C. rosa,"Larva, adult","Xie and Zhang, 2007; Weldon et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,,Bactrocera dorsalis,"Larva, adult","Xie and Zhang, 2007; Weldon et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,immigrants,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,pseudoobscura,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,hydei,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,mojavensis,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,birchii,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,nigrosriparia,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,nepalensis,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,takahashii,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,immigrants,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,nasuta,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,melanogaster,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Drosophila,simulans,"Larva, adult","Hoffmann and Parsons, 1989; Davidson, 1990; Gibbs and Matzkin, 2001; Marron et al., 2003; Hoffmann et al., 2003; Bazinet et al., 2010; Thorat et al., 2012a,b; Davies et al., 2013; Thorat et al., 2016,b; Ferveur et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Coleoptera,Sarcophaga,bullata,Larva,"Yoder et al., 2018",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Acanthoclesiles,obtectus,Egg,"Bienmont et al., 1981; Simmelaere, 2007",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Longitarus,bethea,Egg,"Bienmont et al., 1981; Simmelaere, 2007",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Peltodytes,muticus,Adult,"Arlian and Staiger, 1979; Pallares et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Mezim,aquatic,Adult,"Arlian and Staiger, 1979; Pallares et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Enochohus,halophilus,Adult,"Arlian and Staiger, 1979; Pallares et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Enochohus,politus,Adult,"Arlian and Staiger, 1979; Pallares et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Enochohus,bicolor,Adult,"Arlian and Staiger, 1979; Pallares et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,,Enochohus,jesusaribasi,Adult,"Arlian and Staiger, 1979; Pallares et al., 2016",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Siphonaptera,Solpugilis,vulticulus,"Egg, larva, pupa, adult","Cooke and Skewes, 1988; Silverman and Rust, 1983",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Animalia,Siphonaptera,Ctenocephalides,felis,"Egg, larva, pupa, adult","Cooke and Skewes, 1988; Silverman and Rust, 1983",,Thorat & Nath 2018,https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.01843/full
+Fungi ,Ascomycota,Zygosaccharomyces,bisporus,,,,,
+Fungi ,Ascomycota,Candida,halonitratophila,,,,,
+Fungi ,Ascomycota,Candida,versatilis,,,,,
