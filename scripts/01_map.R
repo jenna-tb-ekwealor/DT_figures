@@ -19,7 +19,7 @@ wd_script_location <- dirname(rstudioapi::getSourceEditorContext()$path)
 setwd(wd_script_location)
 
 
-# Aridity layer -----------------------------------------------------------
+# Aridity map -----------------------------------------------------------
 #--- Download the files from the TerraClimate website ---#
 # tutorial: https://www.painblogr.org/2020-12-15-climate-change.html
 # Variables:
@@ -174,7 +174,7 @@ aridity_map
 dev.off()
 
 
-#--- Load DT taxa data ---#
+# Taxa map -----------------------------------------------------------
 # Marks_et.al_Appendix_S1 2021
 marks <- read.csv("../data/Marks_et.al_Appendix_S1.csv", header = T)
 # fix colnames
@@ -223,7 +223,7 @@ usageKeys = usageKeys[!duplicated(usageKeys$usageKey),]
 
 # create function for retrieving occurrences per Genus
 get_occ <- function(Genus){
-  rgbif::occ_search(taxonKey = Genus, limit = 1000, curlopts = list(verbose = TRUE))
+  rgbif::occ_search(taxonKey = Genus, limit = 10000, curlopts = list(verbose = TRUE))
 }
 
 occ_search <- lapply(usageKeys$usageKey, get_occ)
