@@ -223,7 +223,7 @@ usageKeys = usageKeys[!duplicated(usageKeys$usageKey),]
 
 # create function for retrieving occurrences per Genus
 get_occ <- function(Genus){
-  rgbif::occ_search(taxonKey = Genus, limit = 10000, curlopts = list(verbose = TRUE))
+  rgbif::occ_search(taxonKey = Genus, limit = 2000, curlopts = list(verbose = TRUE))
 }
 
 occ_search <- lapply(usageKeys$usageKey, get_occ)
@@ -234,6 +234,8 @@ names(occ_search) <- usageKeys$Genus
 # save occ search since it's big and took forever
 saveRDS(occ_search, file="../data/occ_search.RData")
 
+
+#### ####
 # load instead of running 
 occ_search <- readRDS("../data/occ_search.RData")
 
@@ -245,21 +247,21 @@ occ_data_all <- purrr::list_rbind(occ_search_unlist)
 occ_data_all %>% dplyr::select(key, decimalLatitude, decimalLongitude, kingdom, phylum, order, family, genus, species, taxonKey, taxonRank, continent, stateProvince) -> occ_data_all
 
 ###############################
-# rasterize occurence points
+# rasterize occurrence points
 ###############################
 
 # arrange df by genus
 occ_data_all <- occ_data_all %>% dplyr::arrange(genus)
 
 # subset only spatial and genera data
-xy <-  occ_data_all %>% dplyr::select(decimalLongitude, decimalLatitude, genus) 
+xy <-  occ_data_all %>% dplyr::select(decimalLongitude, decimalLatitude, genus) %>% na.omit()
 colnames(xy) <- c("lon", "lat", "genus")
 
 # generate genera list
 genera_list <- unique(xy$genus)
 
 v <- terra::vect(xy)
-r <- terra::rast(nrows = 200, ncols = 200, crs = "EPSG:4326", ext = terra::ext(v))
+r <- terra::rast(nrows = 50, ncols = 50, crs = "EPSG:4326", ext = terra::ext(v))
 
 
 genera_raster <- terra::rasterize(v, r, fun = "count", by = "genus")
